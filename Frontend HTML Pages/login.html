@@ -5,14 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        *{
+        * {
             box-sizing: border-box;
             margin: 0px;
             padding: 0px;
         }
-        body{
+
+        body {
             background-color: rgb(47, 47, 47);
         }
+
         /* login page css start  */
         .form-container {
             margin: 50px auto;
@@ -55,8 +57,16 @@
             outline: 0;
             background-color: rgba(17, 24, 39, 1);
             padding: 0.75rem 1rem;
-            color: rgba(243, 244, 246, 1);
+            color: rgba(243, 244, 246, 1) ;
         }
+        /* Change the white to any color */
+            input:-webkit-autofill,
+            input:-webkit-autofill:hover, 
+            input:-webkit-autofill:focus, 
+            input:-webkit-autofill:active{
+                -webkit-box-shadow: 0 0 0 30px rgba(17, 24, 39, 1) inset !important;
+                -webkit-text-fill-color: rgba(243, 244, 246, 1) !important;
+            }
 
         .input-group input:focus {
             border-color: rgba(167, 139, 250);
@@ -86,7 +96,7 @@
             font-weight: 600;
         }
 
-        .sign:hover{
+        .sign:hover {
             cursor: pointer;
         }
 
@@ -107,6 +117,7 @@
     <div class="form-container">
         <p class="title">Login</p>
         <form class="form">
+            {% csrf_token %}
             <div class="input-group">
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username" placeholder="Your Username">
