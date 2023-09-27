@@ -109,7 +109,7 @@ def get_questions(request):
                     # print(e)
                     unanswered_question_list.append(current_question)
 
-        return Response({"status" : "question got successfully", "answered_question" : answered_question_list, "unanswered_question_list" : unanswered_question_list})
+        return Response({"status" : "question got successfully", "answered_question" : answered_question_list, "unanswered_question" : unanswered_question_list})
     else:
         return Response({"status" : "question not got successfully", "error" : "user not authenticated"})
 
