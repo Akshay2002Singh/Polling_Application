@@ -1,20 +1,33 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import NavBar from './NavBar'
+import Alertmsg from './Alertmsg'
+import MainHeading from './MainHeading'
+import { useNavigate } from 'react-router-dom'
+import Cookies from 'universal-cookie'
 
 
-
-function CreatePoll() {
+function CreatePoll(props) {
     const backend_url = 'http://127.0.0.1:8000'
+    const [msg, setMsg] = useState("")
+    const cookies = new Cookies(null, { path: '/' });
     const [inputOptions, setInputOptions] = useState({
         1: "",
         2: ""
     })
+    const Navigate = useNavigate()
+    useEffect(() => {
+        if(!cookies.get('localcsrftoken')){
+            Navigate("/login");
+          }
+    }, [])
+    
+  
     function handleInput(e) {
         setInputOptions({
             ...inputOptions,
             [e.target.name]: e.target.value
         })
-        console.log(inputOptions)
+        // console.log(inputOptions)
     }
     function handleAddOptions() {
         setInputOptions({
@@ -22,6 +35,7 @@ function CreatePoll() {
             [Object.keys(inputOptions).length + 1]: ""
         })
     }
+    
     async function handleSubmit(e) {
         e.preventDefault();
         // dummy_data = {
@@ -29,21 +43,30 @@ function CreatePoll() {
         //     "options": ["option A", "option B", "option C"]
         // }
         let data = {
-            "question" : document.getElementById("ques").value,
-            "options" : Object.values(inputOptions)
+            "question": document.getElementById("ques").value,
+            "options": Object.values(inputOptions)
         }
         const response = await fetch(`${backend_url}/apis/create_question`, {
             method: "POST",
+            mode:'cors',
+            credentials: 'include',
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-CSRFToken" : cookies.get('localcsrftoken')
             },
             body: JSON.stringify(data),
         }).catch(error => console.log(error))
         const dataobj = await response.json();
-        if (data.status === 'question created successfully') {
-            // setMsg("Data Submitted")
-        }else{
-            
+        // console.log(dataobj)
+        if (dataobj.status === 'Question created successfully') {
+            setMsg("Question created")
+            document.getElementById("ques").value = ""
+            setInputOptions({
+                1: "",
+                2: ""
+            })
+        } else {
+            setMsg(`${dataobj.status}, ${dataobj.error}`)
         }
     }
 
@@ -60,9 +83,10 @@ function CreatePoll() {
 
     return (
         <>
-            <NavBar />
+            <NavBar setCsrftoken={props.setCsrftoken} />
+            <Alertmsg msg={msg} setMsg={setMsg} />
+            <MainHeading heading={"Create Poll"} />
             <div id='poll_container'>
-
                 <form method="POST" id="poll_form" onSubmit={handleSubmit}>
                     <div class="mb-3">
                         <label for="ques" class="form-label">Question</label>

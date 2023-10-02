@@ -4,7 +4,6 @@ from rest_framework.decorators import api_view
 from django.contrib.auth import login,logout,authenticate
 from django.contrib.auth.models import User
 from Poll_app.models import Question, Option, User_Response
-
 from Poll_app.serializers import Question_serializer, Option_serializer
 
 # Create your views here.
@@ -13,6 +12,12 @@ from Poll_app.serializers import Question_serializer, Option_serializer
 def home(request):
     return Response({'status ' : 'Server is Working'})
 
+@api_view(['GET',])
+def get_token(request):
+    return Response({
+        'status ' : 'Server is Working',
+        'cookies' : request.COOKIES
+    })
 
 # view to login user
 @api_view(['POST'])
@@ -25,9 +30,9 @@ def signin(request):
     user = authenticate(username = data['username'], password = data['password'])
     if user is not None:
         login(request,user)
-        return Response({"status" : "login successfull"})
+        return Response({"status" : "Login successfull"})
     else:
-        return Response({"status" : "login unsuccessfull", "error" : "Invalid Username or password"})
+        return Response({"status" : "Login unsuccessfull", "error" : "Invalid Username or password"})
 
 
 # view to create user 
@@ -44,17 +49,18 @@ def signup(request):
         user = User.objects.create_user(data["username"],data["email"],data["password"])
         user.first_name = data["name"]
         user.save()
-        return Response({"status" : "signup successfull"})
+        return Response({"status" : "Signup successfull"})
     except Exception as e:
         print(e)
-        return Response({"status" : "signup unsuccessfull" , "error" : str(e) })
+        return Response({"status" : "Signup unsuccessfull" , "error" : str(e) })
 
 
 # view to logout user 
 @api_view(['GET'])
 def signout(request):
     logout(request)
-    return Response({"status" : "logout successfull"})
+    print(request.COOKIES)
+    return Response({"status" : "Logout successfull"})
 
 
 # functions for polling
@@ -69,7 +75,7 @@ def create_question(request):
         # save Question
         try:
             question = Question.objects.get(question_creator=request.user ,question = data['question'])
-            return Response({"status" : "question not created successfully", "error" : "question already created"})
+            return Response({"status" : "Question not created successfully", "error" : "Question already created"})
         except Question.DoesNotExist:
             # no employee found
             question = Question(question_creator=request.user, question=data['question'])
@@ -78,9 +84,9 @@ def create_question(request):
             for i in data["options"]:
                 option = Option(question = question, option = i)
                 option.save()
-            return Response({"status" : "question created successfully"})
+            return Response({"status" : "Question created successfully"})
     else:
-        return Response({"status" : "question not created successfully", "error" : "user not authenticated"})
+        return Response({"status" : "Question not created successfully", "error" : "User not authenticated"})
     
 
 @api_view(['GET'])
@@ -109,9 +115,9 @@ def get_questions(request):
                     # print(e)
                     unanswered_question_list.append(current_question)
 
-        return Response({"status" : "question got successfully", "answered_question" : answered_question_list, "unanswered_question" : unanswered_question_list})
+        return Response({"status" : "Question got successfully", "answered_question" : answered_question_list, "unanswered_question" : unanswered_question_list})
     else:
-        return Response({"status" : "question not got successfully", "error" : "user not authenticated"})
+        return Response({"status" : "Question not got successfully", "error" : "User not authenticated"})
 
 
 @api_view(['POST'])
@@ -124,13 +130,13 @@ def submit_response(request):
     if request.user.is_authenticated:
         try:
             response = User_Response.objects.get(user=request.user, question=Question.objects.get(id=data["q_id"]))
-            return Response({"status" : "response not submitted successfully", "error" : "response already exist"})
+            return Response({"status" : "Response not submitted successfully", "error" : "Response already exist"})
         except:
             response = User_Response(user=request.user, question=Question.objects.get(id=data["q_id"]), options=Option.objects.get(id = data["o_id"]))
             response.save()
-            return Response({"status" : "question got successfully"})
+            return Response({"status" : "Question got successfully"})
     else:
-        return Response({"status" : "response not submitted successfully", "error" : "user not authenticated"})
+        return Response({"status" : "Response not submitted successfully", "error" : "User not authenticated"})
 
 
 @api_view(["GET"])
@@ -145,17 +151,20 @@ def my_questions(request):
             options_queryset = Option.objects.filter(question = current_question["q_id"])
             options_list = []
             total_poll = 0
+            max_option_poll = 0
             for opt in options_queryset:
                 o_serializer = Option_serializer(opt)
                 temp_opt = o_serializer.data
                 poll_count = User_Response.objects.filter(question = current_question["q_id"], options = temp_opt["o_id"]).count()
                 temp_opt["poll_count"] = poll_count
+                max_option_poll = max(max_option_poll,poll_count)
                 total_poll += poll_count
                 options_list.append(temp_opt)
             current_question["options"] = options_list
             current_question["total_poll"] = total_poll
+            current_question["max_option_poll"] = max_option_poll
             questions_list.append(current_question)
-        return Response({"status" : "questions found", "data" : questions_list})
+        return Response({"status" : "Questions found", "data" : questions_list})
     else:
-        return Response({"status" : "questions not found", "error" : "user not authenticated"})
+        return Response({"status" : "Questions not found", "error" : "User not authenticated"})
     

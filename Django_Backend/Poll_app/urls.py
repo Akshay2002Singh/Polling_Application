@@ -5,6 +5,7 @@ from Poll_app import views
 urlpatterns = [
     path('',views.home),
     path('apis/signin', views.signin),
+    path('apis/get_token', views.get_token),
     path('apis/signout', views.signout),
     path('apis/signup', views.signup),
     path('apis/create_question', views.create_question),

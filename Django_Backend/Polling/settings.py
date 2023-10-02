@@ -26,20 +26,20 @@ SECRET_KEY = 'django-insecure-*@8ret6uaj-@mgbi!nsop_&k)=-6zf2n(adc@*p(jrzk#!ort$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
-    'Poll_app',
-    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'Poll_app',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -50,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'Polling.urls'
@@ -124,3 +125,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# added later 
+
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000','https://www.thunderclient.com']
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+# CSRF_COOKIE_DOMAIN = 'localhost'
+# SESSION_COOKIE_DOMAIN = 'localhost'
