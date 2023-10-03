@@ -5,6 +5,8 @@ from django.contrib.auth import login,logout,authenticate
 from django.contrib.auth.models import User
 from Poll_app.models import Question, Option, User_Response
 from Poll_app.serializers import Question_serializer, Option_serializer
+from Poll_app.tasks import make_poll_inactive
+
 
 # Create your views here.
 # view for home page 
@@ -80,6 +82,8 @@ def create_question(request):
             # no employee found
             question = Question(question_creator=request.user, question=data['question'])
             question.save()
+            result = make_poll_inactive.apply_async(args=(question.id,),countdown=(60*60*24))
+            print(result.ready())
             # save options
             for i in data["options"]:
                 option = Option(question = question, option = i)

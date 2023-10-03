@@ -37,9 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_results',
     'corsheaders',
     'Poll_app',
-    'rest_framework'
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -129,6 +130,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # added later 
 
+# cors settings 
 CORS_ALLOWED_ORIGINS = ['http://localhost:3000','https://www.thunderclient.com']
 CORS_ALLOW_CREDENTIALS = True
 CSRF_COOKIE_SECURE = True
@@ -136,5 +138,14 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SAMESITE = 'None'
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
-# CSRF_COOKIE_DOMAIN = 'localhost'
-# SESSION_COOKIE_DOMAIN = 'localhost'
+
+# celery settings 
+# Celery Configuration Options
+url = ""
+with open("redisurl.txt",'r') as f:
+    url = f.read()
+CELERY_BROKER_URL = url
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_EXTENDED = True
+CELERY_TIMEZONE = "Asia/Kolkata"
+CELERY_TASK_TRACK_STARTED = True
