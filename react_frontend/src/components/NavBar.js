@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'universal-cookie';
 
 function NavBar(props) {
-    const backend_url = 'http://127.0.0.1:8000'
+    const backend_url = process.env.REACT_APP_BACKEND_URL
+    console.log(backend_url)
     const Navigate = useNavigate()
     const cookies = new Cookies(null, { path: '/' });
     async function handleSubmit(e) {

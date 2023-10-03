@@ -4,7 +4,7 @@ import Cookies from 'universal-cookie';
 import Alertmsg from './Alertmsg'
 
 function LoginUser(props) {
-    const backend_url = 'http://127.0.0.1:8000'
+    const backend_url = process.env.REACT_APP_BACKEND_URL
     const Navigate = useNavigate()
     const [msg, setMsg] = useState("")
     const cookies = new Cookies(null, { path: '/' });

@@ -7,7 +7,7 @@ import Cookies from 'universal-cookie'
 
 
 function CreatePoll(props) {
-    const backend_url = 'http://127.0.0.1:8000'
+    const backend_url = process.env.REACT_APP_BACKEND_URL
     const [msg, setMsg] = useState("")
     const cookies = new Cookies(null, { path: '/' });
     const [inputOptions, setInputOptions] = useState({

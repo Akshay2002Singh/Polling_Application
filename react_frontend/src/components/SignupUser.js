@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import Alertmsg from './Alertmsg'
 
 function SignupUser() {
-    const backend_url = 'http://127.0.0.1:8000'
+    const backend_url = process.env.REACT_APP_BACKEND_URL
     const Navigate = useNavigate()
     const [msg, setMsg] = useState("")
 
