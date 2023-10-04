@@ -5,6 +5,7 @@ import Alertmsg from './Alertmsg'
 
 function LoginUser(props) {
     const backend_url = process.env.REACT_APP_BACKEND_URL
+    console.log(backend_url);
     const Navigate = useNavigate()
     const [msg, setMsg] = useState("")
     const cookies = new Cookies(null, { path: '/' });
@@ -47,7 +48,7 @@ function LoginUser(props) {
         })
         const dataobj = await response.json();
         if (dataobj.status === 'Login successfull') {
-            fetchdata()
+            await fetchdata()
             await delay(500);
             Navigate("/");
         } else {

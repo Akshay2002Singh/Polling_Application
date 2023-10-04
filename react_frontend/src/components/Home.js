@@ -132,7 +132,7 @@ function Home(props) {
   // }
   useEffect(() => {
     if (!cookies.get('localcsrftoken')) {
-      // Navigate("/login");
+      Navigate("/login");
     }
     async function fetchdata() {
       const response = await fetch(`${backend_url}/apis/get_questions`, {
